@@ -5,7 +5,8 @@ import json
 
 class Channel:
     """Класс для ютуб-канала"""
-    api_key = 'AIzaSyBzAZejRuPV61GONeULcMt_w9aI5e1gmK8'
+    # os.environ["API_KEY"] = 'AIzaSyBzAZejRuPV61GONeULcMt_w9aI5e1gmK8'
+    api_key: str = os.getenv('API_KEY')
 
     def __init__(self, channel_id: str) -> None:
         """Экземпляр инициализируется id канала. Дальше все данные будут подтягиваться по API."""
@@ -15,9 +16,27 @@ class Channel:
         self.title = response['items'][0]['snippet']['title']
         self.description = response['items'][0]['snippet']['description']
         self.url = 'https://www.youtube.com/channel/' + channel_id
-        self.subscriber_count = response['items'][0]['statistics']['subscriberCount']
+        self.subscriber_count = int(response['items'][0]['statistics']['subscriberCount'])
         self.video_count = response['items'][0]['statistics']['videoCount']
         self.view_count = response['items'][0]['statistics']['viewCount']
+
+    def __str__(self):
+        return f'{self.title} ({self.url})'
+
+    def __add__(self, other):
+        return self.subscriber_count + other.subscriber_count
+
+    def __sub__(self, other):
+        return self.subscriber_count - other.subscriber_count
+
+    def __lt__(self, other):
+        return self.subscriber_count < other.subscriber_count
+
+    def __le__(self, other):
+        return self.subscriber_count <= other.subscriber_count
+
+    def __eq__(self, other):
+        return self.subscriber_count == other.subscriber_count
 
     def print_info(self) -> None:
         """Выводит в консоль информацию о канале."""
