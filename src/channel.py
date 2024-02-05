@@ -12,13 +12,13 @@ class Channel:
         """Экземпляр инициализируется id канала. Дальше все данные будут подтягиваться по API."""
         self.__channel_id = channel_id
 
-        response = Channel.get_service().channels().list(id=self.__channel_id, part='snippet,statistics').execute()
-        self.title = response['items'][0]['snippet']['title']
-        self.description = response['items'][0]['snippet']['description']
+        self.response = self.get_service().channels().list(id=self.__channel_id, part='snippet,statistics').execute()
+        self.title = self.response['items'][0]['snippet']['title']
+        self.description = self.response['items'][0]['snippet']['description']
         self.url = 'https://www.youtube.com/channel/' + channel_id
-        self.subscriber_count = int(response['items'][0]['statistics']['subscriberCount'])
-        self.video_count = response['items'][0]['statistics']['videoCount']
-        self.view_count = response['items'][0]['statistics']['viewCount']
+        self.subscriber_count = int(self.response['items'][0]['statistics']['subscriberCount'])
+        self.video_count = self.response['items'][0]['statistics']['videoCount']
+        self.view_count = self.response['items'][0]['statistics']['viewCount']
 
     def __str__(self):
         return f'{self.title} ({self.url})'
@@ -45,7 +45,7 @@ class Channel:
 
     def to_json(self, file_name):
         """Получает данные о канале, записывает их в словарь и создает '.json file' с этим словарем."""
-        response = Channel.get_service().channels().list(id=self.__channel_id, part='snippet,statistics').execute()
+        response = self.get_service().channels().list(id=self.__channel_id, part='snippet,statistics').execute()
         to_json_dict = json.dumps(response, indent=2, ensure_ascii=False)
 
         to_json = open(file_name, 'w', encoding='UTF=8')
