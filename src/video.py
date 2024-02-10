@@ -6,11 +6,18 @@ class Video(Channel):
     """Класс для ютуб-канала"""
 
     def __init__(self, video_id) -> None:
-        """Экземпляр инициализируется id канала. Дальше все данные будут подтягиваться по API."""
+        """Экземпляр инициализируется id видео. Дальше все данные будут подтягиваться по API.
+
+        :param video_id: 'ID' видео.
+        :param response: Словарь с информацией по видео.
+        :param title: Название видео.
+        :param url: Ссылка на видео.
+        :param view_count: Количество просмотров.
+        :param like_count: Количество лайков на видео.
+        """
         self.video_id = video_id
-        self.response = (self.get_service().videos().list(id=self.video_id,
-                                                          part='snippet,statistics,contentDetails,topicDetails',)
-                         .execute())
+        self.response = self.get_service().videos().list(id=self.video_id,
+                                                         part='snippet,statistics').execute()
         self.title = self.response['items'][0]['snippet']['title']
         self.url = 'https://www.youtube.com/watch?v=' + self.video_id
         self.view_count = self.response['items'][0]['statistics']['viewCount']
@@ -28,4 +35,4 @@ class PLVideo(Video):
         self.play_list_id = play_list_id
         self.response = self.get_service().playlistItems().list(playlistId=self.play_list_id,
                                                                 part='contentDetails',
-                                                                maxResults=50,).execute()
+                                                                maxResults=50).execute()

@@ -9,7 +9,17 @@ class Channel:
     api_key: str = os.getenv('API_KEY')
 
     def __init__(self, channel_id: str) -> None:
-        """Экземпляр инициализируется id канала. Дальше все данные будут подтягиваться по API."""
+        """Экземпляр инициализируется id канала. Дальше все данные будут подтягиваться по API.
+
+        :param __channel_id: 'ID' канала.
+        :param response: Словарь с информацией по каналу.
+        :param title: Название канала.
+        :param description: Описание канала.
+        :param url: Ссылка на канал.
+        :param subscriber_count: Количество подписчиков.
+        :param video_count: Количество видео на канале.
+        :param view_count: Количество просмотров.
+        """
         self.__channel_id = channel_id
 
         self.response = self.get_service().channels().list(id=self.__channel_id, part='snippet,statistics').execute()
@@ -40,13 +50,11 @@ class Channel:
 
     def print_info(self) -> None:
         """Выводит в консоль информацию о канале."""
-        response = Channel.get_service().channels().list(id=self.channel_id, part='snippet,statistics').execute()
-        print(json.dumps(response, indent=2, ensure_ascii=False))
+        print(json.dumps(self.response, indent=2, ensure_ascii=False))
 
     def to_json(self, file_name):
         """Получает данные о канале, записывает их в словарь и создает '.json file' с этим словарем."""
-        response = self.get_service().channels().list(id=self.__channel_id, part='snippet,statistics').execute()
-        to_json_dict = json.dumps(response, indent=2, ensure_ascii=False)
+        to_json_dict = json.dumps(self.response, indent=2, ensure_ascii=False)
 
         to_json = open(file_name, 'w', encoding='UTF=8')
         to_json.write(to_json_dict)
