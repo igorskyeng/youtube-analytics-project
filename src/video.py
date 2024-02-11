@@ -18,10 +18,16 @@ class Video(Channel):
         self.video_id = video_id
         self.response = self.get_service().videos().list(id=self.video_id,
                                                          part='snippet,statistics').execute()
-        self.title = self.response['items'][0]['snippet']['title']
-        self.url = 'https://www.youtube.com/watch?v=' + self.video_id
-        self.view_count = self.response['items'][0]['statistics']['viewCount']
-        self.like_count = self.response['items'][0]['statistics']['likeCount']
+        try:
+            self.title = self.response['items'][0]['snippet']['title']
+            self.url = 'https://www.youtube.com/watch?v=' + self.video_id
+            self.view_count = self.response['items'][0]['statistics']['viewCount']
+            self.like_count = self.response['items'][0]['statistics']['likeCount']
+
+        except IndexError:
+            self.title = None
+            self.view_count = None
+            self.like_count = None
 
     def __str__(self):
         return f'{self.title}'
